@@ -14,7 +14,7 @@ const countryInput = document.getElementById('country') as HTMLInputElement;
 const genderSelect = document.getElementById('gender') as HTMLSelectElement;
 
 // Add event listener for form submission
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
     event.preventDefault(); // Prevent default form submission
 
     // Get input values
@@ -48,8 +48,8 @@ form.addEventListener('submit', (event) => {
         gender
     };
 
-    // Send data to sample endpoint using Fetch API
-    fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
+    //Send data to sample endpoint using Fetch API
+    await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -58,7 +58,8 @@ form.addEventListener('submit', (event) => {
         body: JSON.stringify(payload)
     })
         .then((response) => {
-            // const rr = JSON.parse(response);
+            // const rr = await response.json();
+            // console.log(rr);
             console.log(response);
             if (!response.ok) {
                 throw new Error('Failed to submit form');
@@ -70,4 +71,15 @@ form.addEventListener('submit', (event) => {
         .catch((error) => {
             console.error(error);
         });
+
+    // const rrfr = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
+    //     method: 'POST',
+    //     headers: {
+    //         'Content-Type': 'application/json'
+    //     },
+    //     mode: 'cors',
+    //     body: JSON.stringify(payload)
+    // });
+    // const ruga = await rrfr.json();
+    // console.log(ruga);
 });
