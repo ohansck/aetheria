@@ -10,85 +10,109 @@ const subjectInput = document.getElementById('subject') as HTMLInputElement;
 const emailInput1 = document.getElementById('email') as HTMLInputElement;
 const messageInput = document.getElementById('message') as HTMLTextAreaElement;
 const formSubmit1 = document.getElementById('submit') as HTMLButtonElement;
-const submitMessage1 = document.querySelector('.submit-message') as HTMLDivElement;
+const submitMessage1 = document.querySelector('.submit-feedback') as HTMLDivElement;
 // Add event listener for form submission
-form.addEventListener('submit', async (event) => {
+form1.addEventListener('submit', async (event) => {
 
   event.preventDefault(); // Prevent default form submission
 
   //Show user submission is loading
-  formSubmit.toggleAttribute('disabled', true);
-  formSubmit.innerHTML = `<div class="spinner-border spinner-border-sm" role="status">
+  formSubmit1.toggleAttribute('disabled', true);
+  formSubmit1.innerHTML = `<div class="spinner-border spinner-border-sm" role="status">
     <span class="visually-hidden">Sending...</span>
     </div>`;
 
   // Get input values
-  const firstName = firstNameInput.value.trim();
-  const lastName = lastNameInput.value.trim();
-  const email = emailInput.value.trim();
-  const phone = phoneInput.value.trim();
-  const age = ageInput.value.trim();
-  const country = countryInput.value.trim();
-  const gender = genderSelect.value;
-  const linkedin = linkedinInput.value.trim();
-  const blog = blogInput.value.trim();
+  const name = nameInput.value.trim();
+  const email = emailInput1.value.trim();
+  const subject = subjectInput.value.trim();
+  const message = messageInput.value.trim();
+  //const date = countryInput.value.trim();
 
   // Validate input values using regular expressions
-  const isEmailValid = emailRegex.test(email);
-  const isPhoneValid = phoneRegex.test(phone);
-  const isAgeValid = ageRegex.test(age);
-
-  // If any input value is invalid, display an error message
-  if (!isEmailValid || !isPhoneValid || !isAgeValid) {
-    console.log('Invalid input values');
-    submitMessage.innerText = 'Invalid email, phone or age';
-    formSubmit.toggleAttribute('disabled', false);
-    formSubmit.innerHTML = 'I Accept';
-    return;
-  }
-
-  // Create payload object with input values
-  const payload = {
-    firstName,
-    lastName,
-    email,
-    phone,
-    age: parseInt(age),
-    country,
-    gender,
-    linkedin,
-    blog
-  };
-
-  //Send data to sample endpoint using Fetch API
-
+  const isEmailValid = emailCheck.test(email);
   try {
-    const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      mode: 'cors',
-      body: JSON.stringify(payload)
-    });
-    if (!response.ok) {
-      throw new Error('Failed to submit form');
-    }
-    const data = await response.json();
 
-    if (data.message || data.message === "The conditional request failed") {
-      throw new Error('Email already registered');
-    } else {
-      form.reset();
-      console.log(data);
-    }
-    console.log('Form submitted successfully');
-    // Reset the form after successful submission
 
+    // If any input value is invalid, display an error message
+    if (!isEmailValid) {
+      console.log('Invalid input values');
+      submitMessage1.innerText = 'Invalid email';
+      formSubmit1.toggleAttribute('disabled', false);
+      formSubmit1.innerHTML = 'Submit';
+      return;
+    }
+
+    // Get current date and time in UTC+1 timezone
+    const currentDate = new Date();
+    const convertedDate = convertToUTCPlusOne(currentDate);
+    // var options: Intl.DateTimeFormatOptions = {
+    //   hour: "numeric",
+    //   minute: "numeric",
+    //   second: "numeric",
+    //   timeZone: 'UTC +01:00',
+    //   timeZoneName: 'short'
+    // };
+    // const formattedDate = new Intl.DateTimeFormat('en-US', options).format(currentDate);
+    //console.log(convertedDate);
+    // Create payload object with input values
+    const payload = {
+      name,
+      subject,
+      email,
+      message,
+      date: convertedDate
+    };
+
+    //Send data to sample endpoint using Fetch API
+
+    try {
+      const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/prod/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        mode: 'cors',
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit form');
+      }
+      const data = await response.json();
+
+      if (data.message || data.message === "The conditional request failed") {
+        throw new Error('Email already registered');
+      } else {
+        submitMessage1.innerText = 'Successful';
+        form1.reset();
+        //console.log(data);
+      }
+      //console.log('Form submitted successfully');
+      // Reset the form after successful submission
+
+    } catch (error: any) {
+      submitMessage1.innerText = `${error.message}`;
+    }
+
+    formSubmit1.toggleAttribute('disabled', false);
+    formSubmit1.innerHTML = 'Submit';
   } catch (error: any) {
-    submitMessage.innerText = `${error.message}`;
+    console.log(error.message)
   }
-
-  formSubmit.toggleAttribute('disabled', false);
-  formSubmit.innerHTML = 'I Accept';
+  formSubmit1.toggleAttribute('disabled', false);
+  formSubmit1.innerHTML = 'Submit';
 });
+
+
+function convertToUTCPlusOne(date: Date): Date {
+  const utcOffset = date.getTimezoneOffset(); // Get the current timezone offset in minutes
+  const utcPlusOneOffset = 60; // UTC+1 offset in minutes
+
+  // Calculate the new timestamp by adding the offset difference
+  const newTimestamp = date.getTime() + (utcOffset - utcPlusOneOffset) * 60000; // Convert minutes to milliseconds
+
+  // Create a new Date object with the adjusted timestamp
+  const utcPlusOneDate = new Date(newTimestamp);
+
+  return utcPlusOneDate;
+}

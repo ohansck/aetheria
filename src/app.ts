@@ -28,8 +28,8 @@ form.addEventListener('submit', async (event) => {
     </div>`;
 
     // Get input values
-    const firstName = firstNameInput.value.trim();
-    const lastName = lastNameInput.value.trim();
+    const firstname = firstNameInput.value.trim();
+    const lastname = lastNameInput.value.trim();
     const email = emailInput.value.trim();
     const phone = phoneInput.value.trim();
     const age = ageInput.value.trim();
@@ -43,57 +43,81 @@ form.addEventListener('submit', async (event) => {
     const isPhoneValid = phoneRegex.test(phone);
     const isAgeValid = ageRegex.test(age);
 
-    // If any input value is invalid, display an error message
-    if (!isEmailValid || !isPhoneValid || !isAgeValid) {
-        console.log('Invalid input values');
-        submitMessage.innerText = 'Invalid email, phone or age';
-        formSubmit.toggleAttribute('disabled', false);
-        formSubmit.innerHTML = 'I Accept';
-        return;
-    }
-
-    // Create payload object with input values
-    const payload = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        age: parseInt(age),
-        country,
-        gender,
-        linkedin,
-        blog
-    };
-
-    //Send data to sample endpoint using Fetch API
 
     try {
-        const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            mode: 'cors',
-            body: JSON.stringify(payload)
-        });
-        if (!response.ok) {
-            throw new Error('Failed to submit form');
-        }
-        const data = await response.json();
 
-        if (data.message || data.message === "The conditional request failed") {
-            throw new Error('Email already registered');
-        } else {
-            form.reset();
-            console.log(data);
-        }
-        console.log('Form submitted successfully');
-        // Reset the form after successful submission
 
+        // If any input value is invalid, display an error message
+        if (!isEmailValid || !isPhoneValid || !isAgeValid) {
+            //console.log('Invalid input values');
+            submitMessage.innerText = 'Invalid email, phone or age';
+            formSubmit.toggleAttribute('disabled', false);
+            formSubmit.innerHTML = 'I Accept';
+            return;
+        }
+
+        const currentDate1 = new Date();
+        const convertedDate1 = convertToUTCPlusOne1(currentDate1);
+
+        // Create payload object with input values
+        const payload = {
+            firstname,
+            lastname,
+            email,
+            phone,
+            age: parseInt(age),
+            country,
+            gender,
+            linkedin,
+            blog,
+            date: convertedDate1
+        };
+
+        //Send data to sample endpoint using Fetch API
+
+        try {
+            const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/prod/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                mode: 'cors',
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                throw new Error('Failed to submit form');
+            }
+            const data = await response.json();
+
+            if (data.message || data.message === "The conditional request failed") {
+                throw new Error('Email already registered');
+            } else {
+                submitMessage.innerText = 'Successful';
+                form.reset();
+                //console.log(data);
+            }
+            //console.log('Form submitted successfully');
+            // Reset the form after successful submission
+
+        } catch (error: any) {
+            submitMessage.innerText = `${error.message}`;
+        }
     } catch (error: any) {
-        submitMessage.innerText = `${error.message}`;
+        console.log(error.message);
     }
-
     formSubmit.toggleAttribute('disabled', false);
     formSubmit.innerHTML = 'I Accept';
 });
+
+function convertToUTCPlusOne1(date: Date): Date {
+    const utcOffset = date.getTimezoneOffset(); // Get the current timezone offset in minutes
+    const utcPlusOneOffset = 60; // UTC+1 offset in minutes
+
+    // Calculate the new timestamp by adding the offset difference
+    const newTimestamp = date.getTime() + (utcOffset - utcPlusOneOffset) * 60000; // Convert minutes to milliseconds
+
+    // Create a new Date object with the adjusted timestamp
+    const utcPlusOneDate = new Date(newTimestamp);
+
+    return utcPlusOneDate;
+}
