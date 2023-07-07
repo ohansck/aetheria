@@ -54,7 +54,7 @@ form1.addEventListener('submit', async (event) => {
     //   timeZoneName: 'short'
     // };
     // const formattedDate = new Intl.DateTimeFormat('en-US', options).format(currentDate);
-    console.log(convertedDate);
+    //console.log(convertedDate);
     // Create payload object with input values
     const payload = {
       name,
@@ -85,9 +85,9 @@ form1.addEventListener('submit', async (event) => {
       } else {
         submitMessage1.innerText = 'Successful';
         form1.reset();
-        console.log(data);
+        //console.log(data);
       }
-      console.log('Form submitted successfully');
+      //console.log('Form submitted successfully');
       // Reset the form after successful submission
 
     } catch (error: any) {
