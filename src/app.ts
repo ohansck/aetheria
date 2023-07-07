@@ -76,7 +76,7 @@ form.addEventListener('submit', async (event) => {
         //Send data to sample endpoint using Fetch API
 
         try {
-            const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/test/users', {
+            const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/prod/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
