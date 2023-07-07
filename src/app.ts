@@ -84,6 +84,7 @@ form.addEventListener('submit', async (event) => {
         if (data.message || data.message === "The conditional request failed") {
             throw new Error('Email already registered');
         } else {
+            submitMessage.innerText = 'Successful';
             form.reset();
             console.log(data);
         }
