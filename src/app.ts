@@ -13,6 +13,7 @@ const ageInput = document.getElementById('age') as HTMLInputElement;
 const countryInput = document.getElementById('country') as HTMLInputElement;
 const linkedinInput = document.getElementById('linkedin') as HTMLInputElement;
 const blogInput = document.getElementById('blog') as HTMLInputElement;
+const usernameInput = document.getElementById('username') as HTMLInputElement;
 const genderSelect = document.getElementById('gender') as HTMLSelectElement;
 const formSubmit = document.getElementById('submit') as HTMLButtonElement;
 const submitMessage = document.querySelector('.submit-message') as HTMLDivElement;
@@ -37,6 +38,7 @@ form.addEventListener('submit', async (event) => {
     const gender = genderSelect.value;
     const linkedin = linkedinInput.value.trim();
     const blog = blogInput.value.trim();
+    const username = usernameInput.value.trim();
 
     // Validate input values using regular expressions
     const isEmailValid = emailRegex.test(email);
@@ -70,11 +72,11 @@ form.addEventListener('submit', async (event) => {
             gender,
             linkedin,
             blog,
-            date: convertedDate1
+            date: convertedDate1,
+            username,
         };
 
         //Send data to sample endpoint using Fetch API
-
         try {
             const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/prod/users', {
                 method: 'POST',
@@ -84,15 +86,15 @@ form.addEventListener('submit', async (event) => {
                 mode: 'cors',
                 body: JSON.stringify(payload)
             });
-            if (!response.ok) {
-                throw new Error('Failed to submit form');
-            }
+            // if (response.statusText !== "ok") {
+            //     throw new Error('Failed to submit form');
+            // }
             const data = await response.json();
 
             if (data.message || data.message === "The conditional request failed") {
                 throw new Error('Email already registered');
             } else {
-                submitMessage.innerText = 'Successful';
+                submitMessage.innerText = 'Registration Successful';
                 form.reset();
                 //console.log(data);
             }
@@ -100,7 +102,8 @@ form.addEventListener('submit', async (event) => {
             // Reset the form after successful submission
 
         } catch (error: any) {
-            submitMessage.innerText = `${error.message}`;
+            error.message === 'Failed to fetch' ? submitMessage.innerText = `Failed to submit, kindly try again later` : submitMessage.innerText = `${error.message}`
+                ;
         }
     } catch (error: any) {
         console.log(error.message);
