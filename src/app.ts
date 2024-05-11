@@ -81,7 +81,7 @@ form.addEventListener('submit', async (event) => {
 
             const response = await axios({
                 method: 'post',
-                url: 'https://9sboreo26m.execute-api.us-east-1.amazonaws.com/dev/api/register',
+                url: 'https://nvh0902z56.execute-api.us-east-1.amazonaws.com/prod/api/register',
                 data: payload,
                 headers: {
                     'Content-Type': 'application/json'
