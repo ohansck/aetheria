@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 // Define regular expressions for validation
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^\+?\d{1,15}$/;
@@ -48,7 +50,6 @@ form.addEventListener('submit', async (event) => {
 
     try {
 
-
         // If any input value is invalid, display an error message
         if (!isEmailValid || !isPhoneValid || !isAgeValid) {
             //console.log('Invalid input values');
@@ -76,23 +77,25 @@ form.addEventListener('submit', async (event) => {
             username,
         };
 
-        //Send data to sample endpoint using Fetch API
         try {
-            const response = await fetch('https://oc719pbu4a.execute-api.us-east-1.amazonaws.com/prod/users', {
-                method: 'POST',
+
+            const response = await axios({
+                method: 'post',
+                url: 'https://nvh0902z56.execute-api.us-east-1.amazonaws.com/prod/api/register',
+                data: payload,
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                mode: 'cors',
-                body: JSON.stringify(payload)
-            });
+                }
+            })
             // if (response.statusText !== "ok") {
             //     throw new Error('Failed to submit form');
             // }
-            const data = await response.json();
 
-            if (data.message || data.message === "The conditional request failed") {
-                throw new Error('Email already registered');
+            if (response.data.statusCode !== 200) {
+                let errorMessage = 'Failed to register';
+                response.data.emailRegistered ? errorMessage = response.data.message : errorMessage;
+
+                throw new Error(errorMessage);
             } else {
                 submitMessage.innerText = 'Registration Successful';
                 form.reset();
@@ -102,11 +105,11 @@ form.addEventListener('submit', async (event) => {
             // Reset the form after successful submission
 
         } catch (error: any) {
-            error.message === 'Failed to fetch' ? submitMessage.innerText = `Failed to submit, kindly try again later` : submitMessage.innerText = `${error.message}`
+            error.message === 'Failed to register' ? submitMessage.innerText = `Failed to submit, kindly try again later` : submitMessage.innerText = `${error.message}`
                 ;
         }
     } catch (error: any) {
-        console.log(error.message);
+
     }
     formSubmit.toggleAttribute('disabled', false);
     formSubmit.innerHTML = 'I Accept';
