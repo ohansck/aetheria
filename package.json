@@ -1,0 +1,40 @@
+{
+  "name": "isomorphic",
+  "version": "7.0.0",
+  "description": "A nextjs template to build dashboard",
+  "private": true,
+  "scripts": {
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "build": "turbo build",
+    "start": "turbo start",
+    "clean": "turbo clean && rm -rf node_modules .turbo",
+    "iso:dev": "turbo dev --filter=isomorphic",
+    "iso:lint": "turbo lint --filter=isomorphic",
+    "iso:build": "turbo build --filter=isomorphic",
+    "iso:start": "turbo start --filter=isomorphic",
+    "iso:clean": "turbo clean --filter=isomorphic",
+    "starter:dev": "turbo dev --filter=starter",
+    "starter:lint": "turbo lint --filter=starter",
+    "starter:build": "turbo build --filter=starter",
+    "starter:start": "turbo start --filter=starter",
+    "starter:clean": "turbo clean --filter=starter",
+    "i18n:dev": "turbo dev --filter=i18n",
+    "i18n:lint": "turbo lint --filter=i18n",
+    "i18n:build": "turbo build --filter=i18n",
+    "i18n:start": "turbo start --filter=i18n",
+    "i18n:clean": "turbo clean --filter=i18n"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "@repo/typescript-config": "workspace:*",
+    "rimraf": "^5.0.5",
+    "turbo": "2.0.1"
+  },
+  "packageManager": "pnpm@9.1.4",
+  "engines": {
+    "node": ">=18"
+  }
+}
