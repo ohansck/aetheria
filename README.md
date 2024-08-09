@@ -4,7 +4,7 @@ This monorepo is powered by [Turborepo](https://turbo.build/), a tool that optim
 
 ## Getting Started
 
-System Requirements:
+System Requirements for project:
 
 - [Node.js 18.17](https://nodejs.org/en) or later.
 - [Turborepo 2.0.1](https://turbo.build/repo/docs/getting-started/installation)
